@@ -1,0 +1,10 @@
+# AI Business Insight Project - Required Dependencies
+
+pandas
+numpy
+sqlalchemy
+streamlit
+transformers
+torch
+schedule
+faker
