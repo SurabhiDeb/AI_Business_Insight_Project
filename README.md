@@ -2,15 +2,15 @@
 
 ## Overview
 This project is an **AI-powered business intelligence dashboard** built with **Python, SQL, and Streamlit**.  
-It simulates real-world business data using synthetic generation (via Faker), automates ETL workflows, and provides key performance insights through dynamic visualizations and an AI-generated executive summary.
+It simulates real world business data using synthetic generation (via Faker), automates ETL workflows, and provides key performance insights through dynamic visualizations and an AI generated executive summary.
 
-The goal was to replicate an end-to-end data analytics process — from **data extraction to business insight generation** — to demonstrate skills in data engineering, analytics, and automation.
+The goal was to replicate an end-to-end data analytics process from **data extraction to business insight generation** to demonstrate skills in data engineering, analytics, and automation.
 
 ---
 
 ## Features
 - **ETL Pipeline**: Automated data generation, cleaning, and transformation using Python (Pandas, Faker).  
-- **AI-Powered Summary**: NLP-based text generation summarizing key insights.  
+- **AI-Powered Summary**: NLP based text generation summarizing key insights.  
 - **Interactive Dashboard**: Streamlit interface showing KPIs, regional performance tables, and charts.  
 - **Data Storage**: Output stored as CSV files for reproducibility and SQL integration.  
 - **Scalable Design**: Can be extended to real business datasets or APIs.
