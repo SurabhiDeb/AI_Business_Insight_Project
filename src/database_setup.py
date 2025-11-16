@@ -1,29 +1,44 @@
-# src/database_setup.py
 import pandas as pd
 import numpy as np
-from faker import Faker
 from sqlalchemy import create_engine
 import os
 from datetime import datetime, timedelta
-fake = Faker()
+from dateutil.relativedelta import relativedelta
 
-# ensure db dir exists
-os.makedirs('../db', exist_ok=True)
+# Define paths relative to the project root for robustness
+PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+DB_DIR = os.path.join(PROJECT_ROOT, 'db')
+DB_PATH = os.path.join(DB_DIR, 'business_data.db')
+
+# Ensure db directory exists
+os.makedirs(DB_DIR, exist_ok=True)
 
 
-def generate_sales(n_rows=1000, start_date="2024-01-01"):
+def generate_sales(n_rows=50000, start_date_offset_months=6):
+    """Generates synthetic sales transaction data for the last N months."""
     regions = ['North', 'South', 'East', 'West']
     products = ['A', 'B', 'C', 'D']
-    start = datetime.fromisoformat(start_date)
+
+    # Start date is 6 months ago to ensure we have a full "latest month"
+    start = datetime.today() - relativedelta(months=start_date_offset_months)
     rows = []
+
+    # Generate random sales data
     for i in range(n_rows):
-        date = start + timedelta(days=int(np.random.exponential(10)))
-        region = np.random.choice(regions, p=[0.25, 0.25, 0.25, 0.25])
+        # Generate date spanning the last 6 months
+        date_offset = np.random.randint(0, 30 * start_date_offset_months)
+        date = start + timedelta(days=date_offset)
+
+        region = np.random.choice(regions)
         product = np.random.choice(products, p=[0.3, 0.3, 0.2, 0.2])
-        quantity = int(np.random.poisson(20))
-        price = float(np.round(np.random.uniform(20, 200), 2))
+
+        # Quantity and Price setup to yield higher revenues
+        quantity = int(np.random.normal(loc=50, scale=10))
+        price = float(np.round(np.random.uniform(50, 500), 2))
+
         revenue = round(price * quantity, 2)
-        cost = round(revenue * np.random.uniform(0.5, 0.85), 2)
+        cost = round(revenue * np.random.uniform(0.5, 0.75), 2)
+
         rows.append({
             'date': date.date().isoformat(),
             'region': region,
@@ -32,30 +47,39 @@ def generate_sales(n_rows=1000, start_date="2024-01-01"):
             'cost': cost,
             'quantity': quantity
         })
+
     return pd.DataFrame(rows)
 
 
-def generate_targets(months=12):
-    # targets per month per region
+def generate_targets(months=6):
+    """Generates synthetic monthly revenue targets per region for the last N months."""
     regions = ['North', 'South', 'East', 'West']
     rows = []
-    today = datetime.today()
+
     for m in range(months):
-        month = (today - pd.DateOffset(months=m)).strftime('%Y-%m')
+        # Calculate the month string (e.g., '2025-11')
+        month = (datetime.today() - relativedelta(months=m)).strftime('%Y-%m')
         for r in regions:
-            target = int(np.random.uniform(50000, 150000))
+            # Generate higher target revenue between 200k and 500k
+            target = int(np.random.uniform(200000, 500000))
             rows.append({'month': month, 'region': r,
                         'revenue_target': target})
     return pd.DataFrame(rows)
 
 
 def main():
-    sales = generate_sales(800, start_date="2024-01-01")
-    targets = generate_targets(12)
-    engine = create_engine('sqlite:///../db/business_data.db')
+    # Generate high volume data for 6 months
+    sales = generate_sales(n_rows=50000, start_date_offset_months=6)
+    targets = generate_targets(months=6)
+
+    # Create SQLAlchemy engine
+    engine = create_engine(f'sqlite:///{DB_PATH}')
+
+    # Load data into the database
     sales.to_sql('sales_data', engine, if_exists='replace', index=False)
     targets.to_sql('targets', engine, if_exists='replace', index=False)
-    print("Database created at ../db/business_data.db with tables: sales_data, targets")
+
+    print(f"Database created at {DB_PATH} with tables: sales_data, targets")
     print(sales.head())
 
 
