@@ -93,7 +93,7 @@ streamlit run src/dashboard_app.py
 ![AI Summary](images/ai_text.png)  
 
 **Figure 3: ETL Pipeline Output**  
-![Pipeline Output](images/etl_pipeline_output.png) 
+![Pipeline Output](images/etl_pipeline-output.png) 
 
 ---
 
