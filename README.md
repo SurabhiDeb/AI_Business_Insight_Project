@@ -87,7 +87,7 @@ streamlit run src/dashboard_app.py
 ## 5. Sample Outputs
 
 **Figure 1: Streamlit Dashboard Displaying KPIs**  
-![Dashboard View](images/Dashboard_view.png)  
+![Dashboard View](images/dashboard_view.png)  
 
 **Figure 2: AI-Generated Executive Summary**  
 ![AI Summary](images/ai_text.png)  
